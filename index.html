@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+  <html lang="de">
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rasho Haarstudio — Friseur in Fürth</title>
+  <meta name="description" content="Rasho Haarstudio — Friseur am Fürther Hauptbahnhof. 5.0 Sterne, über 780 Bewertungen.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,500;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#080807;
+    --bg-alt:#111110;
+    --gold:#c9a24b;
+          --gold-bright:#e9c877;
+          --text:#f3efe6;
+          --text-muted:#948d80;
+    --line:#242220;
+}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+        background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    cursor:none;
+}
+  @media(pointer:coarse){ body{cursor:auto;} }
+  a{color:inherit;text-decoration:none;}
+  ::selection{background:var(--gold);color:#0c0c0a;}
+  .grain{
+        position:fixed;inset:0;pointer-events:none;z-index:200;opacity:0.05;mix-blend-mode:overlay;
+}
+  .cursor-dot,.cursor-ring{position:fixed;top:0;left:0;pointer-events:none;z-index:999;border-radius:50%;transform:translate(-50%,-50%);}
+  .cursor-dot{width:6px;height:6px;background:var(--gold-bright);}
+  .cursor-ring{width:36px;height:36px;border:1px solid var(--gold);transition:width .25s,height .25s,border-color .25s,opacity .25s;opacity:.6;}
+  .cursor-ring.hover{width:64px;height:64px;border-color:var(--gold-bright);opacity:1;}
+  @media(pointer:coarse){.cursor-dot,.cursor-ring{display:none;}}
+  .loader{
+    position:fixed;inset:0;background:var(--bg);z-index:500;
+    display:flex;align-items:center;justify-content:center;
+    transition:opacity .6s ease, visibility .6s ease;
+  }
+  .loader.hidden{opacity:0;visibility:hidden;}
+  .loader-crown{font-size:40px;color:var(--gold);animation:pulse 1.1s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{transform:scale(1);opacity:.6;}50%{transform:scale(1.15);opacity:1;}}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 28px;}
+  .reveal{opacity:0;transform:translateY(34px);transition:opacity .9s cubic-bezier(.16,.84,.44,1),transform .9s cubic-bezier(.16,.84,.44,1);}
+  .reveal.in{opacity:1;transform:translateY(0);}
+  header{position:fixed;top:0;left:0;right:0;z-index:100;padding:26px 0;transition:background .3s,border-color .3s,padding .3s;}
+  header.scrolled{background:rgba(8,8,7,0.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:16px 0;}
+  .nav{display:flex;align-items:center;justify-content:space-between;}
+  .brand{display:flex;align-items:center;gap:9px;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;}
+  .brand .crown{color:var(--gold);font-size:16px;}
+  .navlinks{display:flex;gap:38px;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;}
+  .navlinks a{color:var(--text-muted);position:relative;padding-bottom:3px;}
+  .navlinks a::after{content:'';position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--gold-bright);transition:width .3s;}
+      .navlinks a:hover{color:var(--text);}
+  .navlinks a:hover::after{width:100%;}
+  .navcta{border:1px solid var(--gold);color:var(--gold-bright);padding:10px 20px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;}
+  .navcta:hover{background:var(--gold);color:#0c0c0a;}
+  .hero{
+        min-height:100vh;display:flex;flex-direction:column;justify-content:center;
+    position:relative;padding:140px 0 60px;
+    background:
+          radial-gradient(ellipse 60% 50% at 50% 0%, rgba(201,162,75,0.12), transparent 70%),
+                  var(--bg);
+    border-bottom:1px solid var(--line);
+    overflow:hidden;
+}
+  .hero-eyebrow{font-family:'Playfair Display',serif;font-style:italic;color:var(--gold-bright);font-size:16px;margin-bottom:22px;letter-spacing:.5px;}
+  .hero h1{
+        font-family:'Bebas Neue',sans-serif;
+    font-size:clamp(58px,11vw,150px);
+    line-height:.92;
+    letter-spacing:1px;
+    text-transform:uppercase;
+}
+  .hero h1 .out{overflow:hidden;display:block;}
+  .hero h1 .in{display:block;transform:translateY(110%);transition:transform 1s cubic-bezier(.16,.84,.44,1);}
+  .hero.loaded h1 .in{transform:translateY(0);}
+  .hero h1 .in:nth-child(1){transition-delay:.15s;}
+  .hero h1 .accent{color:var(--gold-bright);}
+  .hero-sub{display:flex;justify-content:space-between;align-items:flex-end;gap:40px;margin-top:44px;flex-wrap:wrap;}
+  .hero-sub p{color:var(--text-muted);font-size:15px;max-width:380px;}
+  .hero-ctas{display:flex;gap:16px;flex-wrap:wrap;}
+  .btn-primary{background:var(--gold);color:#0c0c0a;padding:16px 32px;font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;}
+  .btn-primary:hover{background:var(--gold-bright);}
+  .btn-outline{border:1px solid var(--line);color:var(--text);padding:16px 32px;font-size:12px;letter-spacing:2px;text-transform:uppercase;}
+  .btn-outline:hover{border-color:var(--gold);color:var(--gold-bright);}
+  .marquee{
+        border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    background:var(--bg-alt);
+    padding:18px 0;overflow:hidden;white-space:nowrap;
+}
+  .marquee-track{display:inline-flex;animation:scroll 26s linear infinite;}
+  .marquee-track span{
+        font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;
+    color:var(--text-muted);padding:0 28px;text-transform:uppercase;
+    display:inline-flex;align-items:center;gap:28px;
+}
+  .marquee-track span em{font-style:normal;color:var(--gold-bright);}
+  .marquee-track span::after{content:'♛';color:var(--gold);font-size:12px;margin-left:28px;}
+  @keyframes scroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+  section{padding:120px 0;}
+  .section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:64px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:28px;}
+  .section-head .tag{font-family:'Playfair Display',serif;font-style:italic;color:var(--gold-bright);font-size:15px;}
+  .section-head h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(38px,5vw,64px);letter-spacing:1px;text-transform:uppercase;line-height:1;}
+  .section-head .idx{font-family:'Bebas Neue',sans-serif;color:var(--text-muted);font-size:15px;letter-spacing:2px;}
+  .service-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);}
+  .service-card{background:var(--bg);padding:44px 32px;position:relative;overflow:hidden;transition:background .4s;}
+  .service-card:hover{background:var(--bg-alt);}
+  .service-card .num{font-family:'Bebas Neue',sans-serif;color:var(--gold);font-size:14px;letter-spacing:2px;margin-bottom:20px;display:block;}
+  .service-card h3{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;}
+  .service-card p{color:var(--text-muted);font-size:14px;}
+  .service-card .arrow{position:absolute;right:24px;top:40px;color:var(--gold);opacity:0;transform:translateX(-8px);transition:opacity .3s,transform .3s;font-size:18px;}
+  .service-card:hover .arrow{opacity:1;transform:translateX(0);}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .stat{text-align:center;padding:56px 20px;border-right:1px solid var(--line);}
+  .stat:last-child{border-right:none;}
+  .stat strong{display:block;font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,6vw,68px);color:var(--gold-bright);line-height:1;}
+  .stat span{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-top:10px;display:block;}
+  @media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr);} .stat:nth-child(2){border-right:none;}}
+  .about{display:grid;grid-template-columns:0.9fr 1.1fr;gap:70px;align-items:center;}
+  .about-visual{aspect-ratio:4/5;background:linear-gradient(160deg,#161513,#080807);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;position:relative;}
+  .about-visual::before{content:'';position:absolute;inset:14px;border:1px solid var(--line);}
+      .about-visual .crown-big{font-size:72px;color:var(--gold);}
+  .about-copy .tag{font-family:'Playfair Display',serif;font-style:italic;color:var(--gold-bright);font-size:15px;margin-bottom:18px;display:block;}
+  .about-copy h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(34px,5vw,52px);letter-spacing:1px;text-transform:uppercase;margin-bottom:22px;line-height:1.05;}
+  .about-copy p{color:var(--text-muted);font-size:15px;margin-bottom:16px;max-width:480px;}
+  .reviews{background:var(--bg-alt);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .review-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);}
+  .review-card{background:var(--bg-alt);padding:36px 30px;}
+  .stars{color:var(--gold);letter-spacing:3px;margin-bottom:18px;font-size:14px;}
+  .review-card p{color:var(--text-muted);font-size:15px;margin-bottom:22px;font-family:'Playfair Display',serif;font-style:italic;line-height:1.6;}
+  .review-author{font-size:13px;color:var(--text);font-weight:500;letter-spacing:.5px;}
+  .review-meta{font-size:11px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+  .contact{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);}
+  .contact-info,.map-panel{background:var(--bg);padding:56px 48px;}
+  .contact-info h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,5vw,58px);letter-spacing:1px;text-transform:uppercase;margin-bottom:22px;line-height:1;}
+  .contact-info p{color:var(--text-muted);font-size:15px;margin-bottom:32px;max-width:420px;}
+  .info-row{display:flex;gap:18px;padding:18px 0;border-top:1px solid var(--line);font-size:14px;}
+  .info-row:last-child{border-bottom:1px solid var(--line);}
+  .info-row .label{color:var(--gold-bright);min-width:120px;letter-spacing:1.5px;font-size:11px;text-transform:uppercase;padding-top:2px;}
+  .info-row .value a:hover{color:var(--gold-bright);}
+  .info-row .muted{color:var(--text-muted);font-size:13px;}
+  .map-panel{padding:0;display:flex;flex-direction:column;}
+  .map-frame{width:100%;height:340px;border:0;filter:grayscale(1) invert(0.92) contrast(0.9);}
+  .map-footer{padding:26px 48px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;border-top:1px solid var(--line);}
+  .map-footer span{font-size:13px;color:var(--text-muted);}
+  .map-footer a{border:1px solid var(--gold);color:var(--gold-bright);padding:10px 20px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;white-space:nowrap;}
+  .map-footer a:hover{background:var(--gold);color:#0c0c0a;}
+  .cta-final{text-align:center;padding:150px 0;position:relative;}
+  .cta-final .tag{font-family:'Playfair Display',serif;font-style:italic;color:var(--gold-bright);font-size:16px;margin-bottom:24px;display:block;}
+  .cta-final h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(46px,9vw,110px);letter-spacing:1px;text-transform:uppercase;line-height:.95;margin-bottom:44px;}
+  .cta-final h2 span{color:var(--gold-bright);}
+  footer{border-top:1px solid var(--line);padding:44px 0;}
+  .foot-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;font-size:12px;color:var(--text-muted);letter-spacing:.5px;}
+  .foot-brand{font-family:'Bebas Neue',sans-serif;color:var(--gold-bright);letter-spacing:2px;font-size:16px;}
+  .foot-links{display:flex;gap:24px;}
+  .foot-links a:hover{color:var(--gold-bright);}
+  @media(max-width:820px){
+    .navlinks{display:none;}
+    .about{grid-template-columns:1fr;}
+    .contact{grid-template-columns:1fr;}
+    .stats{grid-template-columns:repeat(2,1fr);}
+}
+</style>
+      </head>
+      <body>
+      <div class="grain"></div>
+      <div class="cursor-ring" id="cursorRing"></div>
+      <div class="cursor-dot" id="cursorDot"></div>
+      <div class="loader" id="loader"><div class="loader-crown">♛</div></div>
+      <header id="header">
+        <div class="wrap nav">
+          <div class="brand"><span class="crown">♛</span> RASHO HAARSTUDIO</div>
+          <nav class="navlinks">
+            <a href="#leistungen">Leistungen</a>
+            <a href="#ueber-uns">Über uns</a>
+            <a href="#bewertungen">Bewertungen</a>
+            <a href="#kontakt">Kontakt</a>
+          </nav>
+          <a class="navcta" href="tel:+499113263298">0911 3263298</a>
+        </div>
+      </header>
+      <section class="hero" id="hero">
+        <div class="wrap">
+          <div class="hero-eyebrow reveal">Friseur am Fürther Hauptbahnhof</div>
+    <h1>
+      <span class="out"><span class="in">Handwerk.</span></span>
+      <span class="out"><span class="in">Stil.<span class="accent"> Fürth.</span></span></span>
+          </h1>
+          <div class="hero-sub reveal">
+            <p>Schwabacher Str. 57 — Damen, Herren und Kinder. Präzision und Beratung von Evan &amp; Shaafan, dem Team hinter 6.400+ Followern und 782 Bewertungen mit 5.0 Sternen.</p>
+      <div class="hero-ctas">
+        <a class="btn-primary" href="https://instagram.com/rasho_haarstudio" target="_blank" rel="noopener">Termin über Instagram</a>
+        <a class="btn-outline" href="tel:+499113263298">Jetzt anrufen</a>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="marquee">
+        <div class="marquee-track">
+          <span><em>5.0 ★</em> auf Google</span>
+          <span>782 Bewertungen</span>
+          <span>Fürth Hauptbahnhof</span>
+    <span>6.494 Instagram-Follower</span>
+    <span><em>5.0 ★</em> auf Google</span>
+    <span>782 Bewertungen</span>
+    <span>Fürth Hauptbahnhof</span>
+    <span>6.494 Instagram-Follower</span>
+    <span><em>5.0 ★</em> auf Google</span>
+    <span>782 Bewertungen</span>
+    <span>Fürth Hauptbahnhof</span>
+    <span>6.494 Instagram-Follower</span>
+  </div>
+</div>
+<section id="leistungen">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <div class="tag">Leistungen</div>
+        <h2>Was wir tun</h2>
+      </div>
+      <div class="idx">01 — 04</div>
+    </div>
+    <div class="service-grid reveal">
+            <div class="service-card">
+              <span class="num">01</span>
+              <h3>Damen</h3>
+              <p>Individuelle Beratung, Schnitt und Styling — abgestimmt auf Ihre Wünsche.</p>
+              <span class="arrow">↗</span>
+            </div>
+            <div class="service-card">
+              <span class="num">02</span>
+              <h3>Herren</h3>
+              <p>Klassisch oder modern, inklusive Bart- und Konturenschnitt.</p>
+              <span class="arrow">↗</span>
+            </div>
+            <div class="service-card">
+              <span class="num">03</span>
+              <h3>Coloration</h3>
+              <p>Farbe, Balayage und Strähnen mit hochwertigen Produkten.</p>
+        <span class="arrow">↗</span>
+      </div>
+            <div class="service-card">
+              <span class="num">04</span>
+              <h3>Kinder</h3>
+              <p>Geduldig und freundlich — auch für die Kleinsten.</p>
+              <span class="arrow">↗</span>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="stats reveal">
+        <div class="stat"><strong>5.0</strong><span>Ø Google-Bewertung</span></div>
+        <div class="stat"><strong>782</strong><span>Rezensionen</span></div>
+        <div class="stat"><strong>6.494</strong><span>Instagram-Follower</span></div>
+        <div class="stat"><strong>6</strong><span>Tage geöffnet</span></div>
+</div>
+<section id="ueber-uns">
+  <div class="wrap about">
+    <div class="about-visual reveal"><span class="crown-big">♛</span></div>
+          <div class="about-copy reveal">
+            <span class="tag">Über uns</span>
+            <h2>Evan &amp; Shaafan</h2>
+            <p>Rasho Haarstudio liegt direkt am Fürther Hauptbahnhof und wird von Evan und Shaafan geführt. Kunden schätzen präzises Handwerk, schnelle Termine und ehrliche Beratung.</p>
+            <p>782 Google-Bewertungen mit durchgehend 5.0 Sternen sprechen für sich — jetzt wird es Zeit, dass auch Google-Suchende Sie finden, nicht nur Instagram-Follower.</p>
+          </div>
+        </div>
+      </section>
+      <section class="reviews" id="bewertungen">
+        <div class="wrap">
+          <div class="section-head reveal">
+            <div>
+              <div class="tag">Bewertungen</div>
+              <h2>Kunden sagen</h2>
+            </div>
+            <div class="idx">5.0 / 5</div>
+          </div>
+          <div class="review-grid reveal">
+            <div class="review-card">
+              <div class="stars">★★★★★</div>
+              <p>„Excelente lugar! Fui por un cambio de look. Evan me recomendó un estilo perfecto para mi cabello.“</p>
+              <div class="review-author">Ximena Diaz</div>
+              <div class="review-meta">Local Guide · Google</div>
+      </div>
+      <div class="review-card">
+        <div class="stars">★★★★★</div>
+              <p>„Best haircut in town.“</p>
+              <div class="review-author">Berat Avdiu</div>
+              <div class="review-meta">Google-Rezension</div>
+            </div>
+            <div class="review-card">
+              <div class="stars">★★★★★</div>
+              <p>„Excelente atención! Muy amables y rápidos para cortar.“</p>
+              <div class="review-author">YEYCA Beats</div>
+              <div class="review-meta">Google-Rezension</div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section id="kontakt">
+        <div class="wrap">
+          <div class="section-head reveal">
+            <div>
+              <div class="tag">Kontakt</div>
+              <h2>Besuchen Sie uns</h2>
+      </div>
+      <div class="idx">Fürth</div>
+    </div>
+    <div class="contact reveal">
+            <div class="contact-info">
+              <p>Direkt am Fürther Hauptbahnhof — spontan vorbeikommen oder per Instagram und Telefon einen Termin sichern.</p>
+        <div class="info-row"><div class="label">Adresse</div><div class="value">Schwabacher Str. 57<br>90763 Fürth</div></div>
+              <div class="info-row"><div class="label">Telefon</div><div class="value"><a href="tel:+499113263298">0911 3263298</a></div></div>
+              <div class="info-row"><div class="label">Instagram</div><div class="value"><a href="https://instagram.com/rasho_haarstudio" target="_blank" rel="noopener">@rasho_haarstudio</a></div></div>
+              <div class="info-row"><div class="label">Öffnungszeiten</div><div class="value">Mo–Mi 09:00–19:00<br><span class="muted">Do–Sa 09:00–20:00 · So geschlossen</span></div></div>
+            </div>
+            <div class="map-panel">
+              <iframe class="map-frame" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Rasho+Haarstudio,+Schwabacher+Stra%C3%9Fe+57,+90763+F%C3%BCrth&output=embed"></iframe>
+              <div class="map-footer">
+                <span>2 Min. vom Hauptbahnhof Fürth</span>
+          <a href="https://www.google.com/maps/dir/?api=1&destination=Rasho+Haarstudio%2C+Schwabacher+Stra%C3%9Fe+57%2C+90763+F%C3%BCrth" target="_blank" rel="noopener">Route planen →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="cta-final reveal">
+        <div class="wrap">
+          <span class="tag">Bereit für den nächsten Schritt?</span>
+    <h2>Termin <span>sichern.</span></h2>
+    <div class="hero-ctas" style="justify-content:center;">
+      <a class="btn-primary" href="https://instagram.com/rasho_haarstudio" target="_blank" rel="noopener">Instagram öffnen</a>
+            <a class="btn-outline" href="tel:+499113263298">0911 3263298</a>
+          </div>
+        </div>
+      </section>
+      <footer>
+        <div class="wrap foot-row">
+          <div class="foot-brand">RASHO HAARSTUDIO</div>
+          <div>Schwabacher Str. 57, 90763 Fürth</div>
+          <div class="foot-links">
+            <a href="tel:+499113263298">Anrufen</a>
+            <a href="https://instagram.com/rasho_haarstudio" target="_blank" rel="noopener">Instagram</a>
+          </div>
+        </div>
+      </footer>
+      <script>
+      (function(){
+        var loader=document.getElementById('loader');
+  var hero=document.getElementById('hero');
+  window.addEventListener('load',function(){
+        setTimeout(function(){
+                loader.classList.add('hidden');
+      hero.classList.add('loaded');
+      document.querySelectorAll('.hero-sub.reveal, .hero-eyebrow.reveal').forEach(function(el){ el.classList.add('in'); });
+        },400);
+  });
+  var header=document.getElementById('header');
+  window.addEventListener('scroll',function(){
+        header.classList.toggle('scrolled', window.scrollY>40);
+  });
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); } });
+  },{threshold:0.15});
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+  var dot=document.getElementById('cursorDot');
+  var ring=document.getElementById('cursorRing');
+  if(matchMedia('(pointer:fine)').matches){
+    var rx=0, ry=0, mx=0, my=0;
+    window.addEventListener('mousemove',function(e){
+            mx=e.clientX; my=e.clientY;
+      dot.style.left=mx+'px'; dot.style.top=my+'px';
+    });
+    function loop(){
+            rx+= (mx-rx)*0.18; ry+= (my-ry)*0.18;
+      ring.style.left=rx+'px'; ring.style.top=ry+'px';
+      requestAnimationFrame(loop);
+    }
+    loop();
+    document.querySelectorAll('a,button').forEach(function(el){
+            el.addEventListener('mouseenter',function(){ ring.classList.add('hover'); });
+      el.addEventListener('mouseleave',function(){ ring.classList.remove('hover'); });
+    });
+  }
+    })();
+</script>
+  </body>
+  </html>
